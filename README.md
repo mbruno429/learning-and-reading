@@ -60,7 +60,7 @@ The app is published with GitHub Pages at **https://mbruno429.github.io/learning
 - Nothing about the child leaves the device: there is no account, no tracking and no server.
 - For fewer distractions on Android, turn on "App pinning" in the device settings and pin Reading Quest before handing it over.
 
-Every push to `main` republishes the site (`.github/workflows/pages.yml`): it checks the lesson content, rebuilds the offline file list and deploys `app/src/main/assets/www`.
+GitHub Pages publishes the `main` branch as it is (Settings → Pages → Deploy from a branch → `main`, `/ (root)`), so every push to `main` updates the site within a minute or two. The page at the repository root forwards to the app in `app/src/main/assets/www/`. After changing anything under `www/`, run `node tools/make-sw.js` and commit the result so devices pick up the update offline; `.github/workflows/checks.yml` fails the push if that was forgotten or if lesson content is invalid.
 
 ## Install the Android app instead (APK)
 

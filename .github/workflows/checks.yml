@@ -1,0 +1,28 @@
+name: Check content
+
+# GitHub Pages publishes this repository straight from the main branch (Settings -> Pages -> Deploy from a branch).
+# This workflow only checks that what is being published is sound.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check lesson content
+        run: node tools/validate.js
+      - name: Check the offline file list is up to date
+        run: |
+          node tools/make-sw.js
+          git diff --exit-code -- app/src/main/assets/www/sw.js || (echo "sw.js is out of date: run 'node tools/make-sw.js' and commit the result" && exit 1)
