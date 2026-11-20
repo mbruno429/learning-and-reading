@@ -1,0 +1,13 @@
+.gradle/
+build/
+app/build/
+local.properties
+*.iml
+.idea/
+dist/
+node_modules/
+
+# The APK signing key stays off GitHub. Keep your own copy safe: updates must be signed with the same key.
+keystore/
+*.jks
+*.keystore

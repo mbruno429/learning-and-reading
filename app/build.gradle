@@ -1,0 +1,54 @@
+plugins {
+    id 'com.android.application'
+}
+
+// The same key must sign every update, or Android will refuse to install over the old version
+// (and the child's progress would be lost). The key and its password are NOT in the repository:
+//   keystore/readingquest.jks        your signing key
+//   keystore/keystore.properties     storePassword=..., keyPassword=..., keyAlias=readingquest
+def keystoreFile = rootProject.file('keystore/readingquest.jks')
+def keystoreProps = new Properties()
+def keystorePropsFile = rootProject.file('keystore/keystore.properties')
+if (keystorePropsFile.exists()) keystorePropsFile.withInputStream { keystoreProps.load(it) }
+def canSign = keystoreFile.exists() && keystoreProps.getProperty('storePassword')
+
+android {
+    namespace 'com.readingquest.app'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.readingquest.app'
+        minSdk 24
+        targetSdk 34
+        versionCode 3
+        versionName '1.2'
+    }
+
+    signingConfigs {
+        release {
+            if (canSign) {
+                storeFile keystoreFile
+                storePassword keystoreProps.getProperty('storePassword')
+                keyAlias keystoreProps.getProperty('keyAlias', 'readingquest')
+                keyPassword keystoreProps.getProperty('keyPassword', keystoreProps.getProperty('storePassword'))
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            if (canSign) signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+}
